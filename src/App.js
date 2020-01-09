@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import axios from 'axios';
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Lasange from './Lasange';
+
+class App extends Component {
+
+  state = {
+    lasanges: []
+  }
+
+  async componentDidMount(){
+    await axios("https://lasange.herokuapp.com/lasange")
+    .then(res => {
+      this.setState({lasanges: res.data});
+    })
+  }
+
+  render(){
+    const {lasanges} = this.state;
+    return (
+      <div className="App">
+        <h1>Best Lasanges in Melbourne</h1>
+        {
+          lasanges? lasanges.map((lasange, index)=>{
+            return (<Lasange name={lasange["name"]} location={lasange["location"]} price={lasange["price"]} />)
+          }) : null
+        }
+      </div>
+    );
+  }
 }
 
 export default App;
